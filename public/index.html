@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>418: I'm A Teapot | Presenter</title>
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/index.css" />
+  </head>
+  <body>
+    <!-- p5.js sketch renders here (fullscreen, behind slides) -->
+    <div id="sketch-container"></div>
+
+    <!-- Slides layer -->
+    <div id="slides">
+      <!-- Slide content goes here -->
+    </div>
+
+    <!-- Hidden nav (mousemove reveals, timeout hides) -->
+    <nav id="nav">
+      <button id="prev">←</button>
+      <button id="next">→</button>
+    </nav>
+
+    <script src="js/p5.min.js"></script>
+    <script src="js/sketch.js"></script>
+    <script src="js/ws-client.js"></script>
+    <script>
+      // Nav visibility logic
+      let navTimeout;
+      const nav = document.getElementById("nav");
+
+      document.addEventListener("mousemove", () => {
+        nav.classList.add("visible");
+        clearTimeout(navTimeout);
+        navTimeout = setTimeout(() => nav.classList.remove("visible"), 2500);
+      });
+    </script>
+  </body>
+</html>

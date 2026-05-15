@@ -1,0 +1,34 @@
+/* base.css — shared early-web aesthetic tokens */
+/* Loaded by both index.html and play.html */
+
+:root {
+  --font-mono: "Courier New", Courier, monospace;
+  --font-sans: Arial, Helvetica, sans-serif;
+
+  --color-bg: #000;
+  --color-fg: #e0e0e0;
+  --color-accent: #c0ff00;
+  --color-dim: #555;
+  --color-error: #ff3c3c;
+
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 32px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1.4;
+}

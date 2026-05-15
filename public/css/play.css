@@ -1,0 +1,19 @@
+/* play.css — audience control surface */
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  overscroll-behavior: none; /* prevent pull-to-refresh on mobile */
+}
+
+#control-surface {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}

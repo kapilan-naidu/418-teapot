@@ -1,0 +1,30 @@
+/* index.css — presenter view */
+
+#sketch-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+#slides {
+  position: relative;
+  z-index: 1;
+  /* Slides layer sits above the sketch */
+}
+
+/* Hidden nav — revealed on mousemove, fades on timeout */
+#nav {
+  position: fixed;
+  bottom: var(--spacing-md);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+#nav.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
