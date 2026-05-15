@@ -1,10 +1,12 @@
 // ws-client.js
 // Shared WebSocket client — used by both index.html and play.html
+// On index.html: pipes incoming messages to handleSketchMessage() in sketch.js
+// On play.html:  pipes incoming messages to onMessage() callback set by controls.js
 
 const WS_URL = `ws://${location.host}`;
 
 let socket;
-let onMessageCallback = null;
+let _onMessageCallback = null;
 
 function connect() {
   socket = new WebSocket(WS_URL);
@@ -14,13 +16,22 @@ function connect() {
   });
 
   socket.addEventListener("message", (event) => {
-    if (onMessageCallback) {
-      try {
-        const data = JSON.parse(event.data);
-        onMessageCallback(data);
-      } catch (e) {
-        console.warn("[ws] non-JSON message:", event.data);
-      }
+    let data;
+    try {
+      data = JSON.parse(event.data);
+    } catch {
+      console.warn("[ws] non-JSON message:", event.data);
+      return;
+    }
+
+    // Presenter view — route to sketch
+    if (typeof handleSketchMessage === "function") {
+      handleSketchMessage(data);
+    }
+
+    // Any registered callback (used by play.html / controls.js)
+    if (_onMessageCallback) {
+      _onMessageCallback(data);
     }
   });
 
@@ -41,7 +52,7 @@ function send(data) {
 }
 
 function onMessage(callback) {
-  onMessageCallback = callback;
+  _onMessageCallback = callback;
 }
 
 connect();

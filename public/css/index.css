@@ -91,6 +91,13 @@
   color: var(--color-accent);
 }
 
+.handle {
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: bold;
+  color: var(--color-fg);
+}
+
 /* --- Shared slide wordart --- */
 .slide-wordart {
   max-width: 70vw;

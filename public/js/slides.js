@@ -7,17 +7,24 @@ let current = 0;
 function goTo(index) {
   if (index < 0 || index >= slides.length) return;
 
+  // Pause sketch when leaving slide 6 (index 5)
+  if (current === 5 && index !== 5) {
+    if (typeof sketchPause === "function") sketchPause();
+  }
+
   slides[current].classList.remove("active");
   current = index;
   slides[current].classList.add("active");
   counter.textContent = `${current + 1} / ${slides.length}`;
 
-  // Update URL hash without triggering a page jump
   history.replaceState(null, null, `#slide-${current + 1}`);
 
+  // Prewarm on slide 5 (index 4)
   if (current === 4) {
     if (typeof sketchPrewarm === "function") sketchPrewarm();
   }
+
+  // Start (or resume) on slide 6 (index 5)
   if (current === 5) {
     if (typeof sketchStart === "function") sketchStart();
   }
@@ -27,6 +34,9 @@ function goTo(index) {
 const initialSlide = parseInt(location.hash.replace("#slide-", "")) - 1;
 if (!isNaN(initialSlide) && initialSlide >= 0 && initialSlide < slides.length) {
   goTo(initialSlide);
+} else {
+  // Ensure counter is correct on default load
+  counter.textContent = `1 / ${slides.length}`;
 }
 
 document.getElementById("prev").addEventListener("click", () => goTo(current - 1));
@@ -37,7 +47,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") goTo(current - 1);
 });
 
-// Nav visibility
+// Nav visibility — show on mousemove, hide after 2.5s idle
 let navTimeout;
 const nav = document.getElementById("nav");
 
