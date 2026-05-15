@@ -4,11 +4,13 @@
 :root {
   --font-mono: "Courier New", Courier, monospace;
   --font-sans: Arial, Helvetica, sans-serif;
+  --font-comic: "comic-sans-ms", "Comic Sans MS", "Comic Sans", cursive;
 
   --color-bg: #000;
   --color-fg: #e0e0e0;
   --color-accent: #c0ff00;
   --color-dim: #555;
+  --color-shade: #888;
   --color-error: #ff3c3c;
 
   --spacing-sm: 8px;

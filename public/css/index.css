@@ -1,18 +1,227 @@
 /* index.css — presenter view */
 
+/* --- Sketch container --- */
 #sketch-container {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
 
+/* --- Slide system --- */
 #slides {
   position: relative;
   z-index: 1;
-  /* Slides layer sits above the sketch */
+  width: 100%;
+  height: 100vh;
 }
 
-/* Hidden nav — revealed on mousemove, fades on timeout */
+.slide {
+  display: none;
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  inset: 0;
+}
+
+.slide.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide-content {
+  text-align: center;
+  padding: var(--spacing-lg);
+}
+
+/* --- Tiling GIF background (slides 1 + 2) --- */
+#slide-1,
+#slide-2,
+#slide-3 {
+  background-image: url("../images/bg-stars.gif");
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+#slide-1::after,
+#slide-2::after,
+#slide-3::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 0;
+}
+
+#slide-1 .slide-content,
+#slide-2 .slide-content,
+#slide-3 .slide-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Cover slide --- */
+.cover-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  position: relative;
+}
+
+.teapot-gif {
+  position: absolute;
+  width: clamp(200px, 27vw, 550px);
+  translate: 0 -50%;
+  z-index: 0;
+}
+
+.title-wordart {
+  max-width: 80vw;
+  max-height: 45vh;
+  /* deliberately no smoothing — keep that pixelated word art look */
+  image-rendering: pixelated;
+  position: relative;
+  z-index: 1; /* sits above teapot */
+}
+
+.subtitle {
+  font-family: var(--font-comic);
+  font-size: clamp(1.2rem, 3vw, 2.5rem);
+  color: var(--color-accent);
+}
+
+/* --- Shared slide wordart --- */
+.slide-wordart {
+  max-width: 70vw;
+  max-height: 16vh;
+  image-rendering: pixelated;
+  margin-bottom: var(--spacing-md);
+}
+
+.content-box {
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid var(--color-accent);
+  padding: var(--spacing-lg);
+  max-width: 800px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin: var(--spacing-lg) auto 0; /* centres box + spacing from title */
+}
+
+/* --- Typography classes --- */
+.times {
+  font-family: "Times New Roman", Times, serif;
+  font-style: italic;
+  font-size: clamp(1.5rem, 2.8vw, 2rem);
+  color: var(--color-fg);
+}
+
+.code-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  font-family: var(--font-mono);
+  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+}
+
+.code-num {
+  color: var(--color-accent);
+  font-weight: bold;
+  margin-right: var(--spacing-sm);
+}
+
+.code-desc {
+  color: var(--color-fg);
+}
+
+.code-note {
+  color: var(--color-shade);
+  font-size: 0.7em;
+  margin-left: var(--spacing-sm);
+  white-space: nowrap;
+}
+
+.comic-small {
+  font-family: var(--font-comic);
+  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+  color: var(--color-fg);
+  line-height: 1.8;
+}
+
+.courier-accent {
+  font-family: var(--font-mono);
+  font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+  color: var(--color-accent);
+  line-height: 1.6;
+}
+
+.early-link {
+  color: #ff00ff;
+  text-decoration: underline;
+  font-weight: 700;
+  animation: blink-underline 1s step-start infinite;
+  cursor: none;
+}
+
+.early-link:hover {
+  color: #00ffff;
+}
+
+@keyframes blink-underline {
+  0%,
+  100% {
+    text-decoration-color: #ff00ff;
+  }
+  50% {
+    text-decoration-color: transparent;
+  }
+}
+
+#slide-5 {
+  background-image: url("../images/bg-baby.gif");
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+#slide-5::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+
+#slide-5 .slide-content {
+  position: relative;
+  z-index: 1;
+}
+
+#slide-5 .times {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+}
+
+#slide-5 .code-list {
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+}
+
+#slide-5 .comic-small {
+  font-size: clamp(1rem, 1.8vw, 1.4rem);
+}
+
+#slide-5 .slide-wordart {
+  max-height: 12vh;
+}
+
+/* --- Experience slide (slide 5) --- */
+.slide-experience {
+  /* Sketch shows through — keep content minimal */
+  background: transparent;
+}
+
+/* --- Nav (fallback buttons) --- */
 #nav {
   position: fixed;
   bottom: var(--spacing-md);
@@ -22,9 +231,34 @@
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-dim);
 }
 
 #nav.visible {
   opacity: 1;
   pointer-events: auto;
+}
+
+#nav button {
+  background: none;
+  border: 1px solid var(--color-dim);
+  color: var(--color-fg);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+#nav button:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+#slide-counter {
+  color: var(--color-dim);
 }

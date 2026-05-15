@@ -5,37 +5,234 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>418: I'm A Teapot | Presenter</title>
+    <link rel="stylesheet" href="https://use.typekit.net/zfg1uow.css" />
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/sass.css" />
   </head>
   <body>
     <!-- p5.js sketch renders here (fullscreen, behind slides) -->
     <div id="sketch-container"></div>
 
-    <!-- Slides layer -->
+    <!-- Slides -->
     <div id="slides">
-      <!-- Slide content goes here -->
+      <!-- SLIDE 1: Cover -->
+      <section class="slide active" id="slide-1">
+        <div class="slide-content cover-content">
+          <img src="images/teapot.gif" alt="" class="teapot-gif" />
+          <img
+            src="images/title-wordart.png"
+            alt="418: I'm a Teapot"
+            class="title-wordart"
+          />
+          <p class="subtitle">Kapilan Naidu</p>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: HTTP codes -->
+      <section class="slide" id="slide-2">
+        <div class="slide-content">
+          <img
+            src="images/slide2-wordart.png"
+            alt="HTTP Response Codes"
+            class="slide-wordart"
+          />
+          <div class="content-box">
+            <p class="times">Every response from the web has a code.</p>
+            <div class="code-list">
+              <p><span class="code-num">200</span> <span class="code-desc">OK</span></p>
+              <p>
+                <span class="code-num">301</span>
+                <span class="code-desc">Moved Permanently</span>
+              </p>
+              <p>
+                <span class="code-num">404</span>
+                <span class="code-desc">Not Found</span>
+                <span class="code-note">← everyone knows this one</span>
+              </p>
+            </div>
+            <br />
+            <p class="comic-small">But there are other...stranger ones 🤔</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: 418 punchline + early web -->
+      <section class="slide" id="slide-3">
+        <div class="slide-content">
+          <img
+            src="images/slide3-wordart.png"
+            alt="418: I'm a Teapot"
+            class="slide-wordart"
+          />
+          <div class="content-box">
+            <p class="courier-accent">
+              A server that declares itself a
+              <a
+                href="https://en.wikipedia.org/wiki/Hyper_Text_Coffee_Pot_Control_Protocol"
+                class="early-link"
+                target="_blank"
+                >teapot</a
+              >.<br />And refuses to brew coffee.
+            </p>
+            <p class="times">Unnecessary. Absurd. Entirely sincere.</p>
+            <p class="comic-small">
+              This was the early web.<br />
+              <a
+                href="https://oneterabyteofkilobyteage.tumblr.com"
+                class="early-link"
+                target="_blank"
+                >Geocities</a
+              >.
+              <a href="https://anthology.rhizome.org" class="early-link" target="_blank"
+                >Net art</a
+              >. Pages that crashed
+              <span style="color: var(--color-dim)">(on purpose?)</span><br />
+              The browser as a sketchpad of creative possibilities.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: Hyper-optimized (SaaS parody) -->
+      <section class="slide slide-saas" id="slide-4">
+        <div class="saas-bg-gradient"></div>
+        <div class="saas-content">
+          <div class="saas-badge">✦ Now in Public Beta</div>
+          <h1 class="saas-heading">
+            Streamline Your<br /><span class="saas-heading-accent">Workflow</span>
+          </h1>
+          <p class="saas-sub">The modern web. Polished. Optimised. Frictionless.</p>
+          <div class="saas-pills">
+            <div class="saas-pill"><span class="saas-check">✓</span> Seamless UX</div>
+            <div class="saas-pill">
+              <span class="saas-check">✓</span> Frictionless Onboarding
+            </div>
+            <div class="saas-pill">
+              <span class="saas-check">✓</span> Synergistic Engagement
+            </div>
+          </div>
+          <button class="saas-cta early-link" onclick="goTo(4)">
+            Get Started Free →
+          </button>
+          <p class="saas-fine">No weird teapots. No broken pages. No fun.</p>
+          <div class="saas-logos">
+            <span>TRUSTED BY</span>
+            <span class="saas-logo-item">Acme Corp</span>
+            <span class="saas-logo-item">Globex</span>
+            <span class="saas-logo-item">Initech</span>
+            <span class="saas-logo-item">Umbrella</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: Pivot / weird APIs -->
+      <section class="slide" id="slide-5">
+        <div class="slide-content">
+          <img src="images/slide5-wordart.png" alt="But wait..." class="slide-wordart" />
+          <div class="content-box">
+            <p class="times">
+              The browser never got less powerful.<br />We just stopped asking it to be
+              <strong>weird</strong>.
+            </p>
+            <br />
+            <div class="code-list">
+              <p>
+                <span class="code-num">Web Speech API</span>
+                <span class="code-desc">— your browser can talk</span>
+              </p>
+              <p>
+                <span class="code-num">Device Orientation</span>
+                <span class="code-desc">— it knows how you're holding it</span>
+              </p>
+              <p>
+                <span class="code-num">Vibration API</span>
+                <span class="code-desc">— it can touch you back</span>
+              </p>
+              <p>
+                <span class="code-num">Gamepad API</span>
+                <span class="code-desc">— controllers, in a browser</span>
+              </p>
+              <p>
+                <span class="code-num">WebMIDI</span>
+                <span class="code-desc">— musical instruments, in a browser</span>
+              </p>
+              <p>
+                <span class="code-num">Web Serial</span>
+                <span class="code-desc">— physical hardware, in a browser</span>
+              </p>
+            </div>
+            <br />
+            <p class="comic-small">
+              The web can still be strange! <br />
+              We just need to choose it to be so ;)
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: The Experience (sketch goes live) -->
+      <section class="slide slide-experience" id="slide-6">
+        <div class="slide-content">
+          <p class="slide-placeholder">[slide 6 — coming soon]</p>
+        </div>
+      </section>
     </div>
 
     <!-- Hidden nav (mousemove reveals, timeout hides) -->
     <nav id="nav">
       <button id="prev">←</button>
+      <span id="slide-counter">1 / 6</span>
       <button id="next">→</button>
     </nav>
 
+    <script src="js/slides.js"></script>
     <script src="js/p5.min.js"></script>
     <script src="js/sketch.js"></script>
     <script src="js/ws-client.js"></script>
+
+    <!-- Cursor hide on idle -->
     <script>
-      // Nav visibility logic
-      let navTimeout;
-      const nav = document.getElementById("nav");
+      let cursorTimeout;
 
       document.addEventListener("mousemove", () => {
-        nav.classList.add("visible");
-        clearTimeout(navTimeout);
-        navTimeout = setTimeout(() => nav.classList.remove("visible"), 2500);
+        document.body.style.cursor = "default";
+        clearTimeout(cursorTimeout);
+        cursorTimeout = setTimeout(() => {
+          document.body.style.cursor = "none";
+        }, 4000);
+      });
+    </script>
+
+    <!-- Comically large hand cursor for .early-link -->
+    <script>
+      const fakeCursor = document.createElement("div");
+      fakeCursor.innerHTML =
+        '<img src="/images/cursor-hand.png" style="width: 100px; height: auto;">';
+      fakeCursor.style.cssText = `
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        display: none;
+        transform: translate(-40px, -10px);
+      `;
+      document.body.appendChild(fakeCursor);
+
+      document.addEventListener("mousemove", (e) => {
+        fakeCursor.style.left = e.clientX + "px";
+        fakeCursor.style.top = e.clientY + "px";
+      });
+
+      document.querySelectorAll(".early-link").forEach((link) => {
+        link.addEventListener("mouseenter", () => {
+          fakeCursor.style.display = "block";
+          document.body.style.cursor = "none";
+        });
+        link.addEventListener("mouseleave", () => {
+          fakeCursor.style.display = "none";
+          document.body.style.cursor = "none";
+        });
       });
     </script>
   </body>

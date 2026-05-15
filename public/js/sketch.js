@@ -10,6 +10,8 @@ const params = {
 function setup() {
   const canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent("sketch-container");
+
+  noCursor();
 }
 
 function draw() {

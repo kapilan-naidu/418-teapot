@@ -1,0 +1,176 @@
+/* --- SaaS parody slide (slide 4) --- */
+.slide-saas {
+  background: #ffffff;
+  color: #1a1a1a;
+  font-family: var(--font-sans);
+  overflow: hidden;
+}
+
+.saas-bg-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #f0f4ff 0%, #faf0ff 40%, #f0faff 100%);
+  z-index: 0;
+}
+
+/* Animated soft orbs */
+.saas-bg-gradient::before {
+  width: 700px;
+  height: 700px;
+  background: #c7b8ff;
+  top: -250px;
+  right: -150px;
+  opacity: 0.7;
+  animation: orb-move-a 6s ease-in-out infinite alternate;
+}
+
+.saas-bg-gradient::after {
+  width: 600px;
+  height: 600px;
+  background: #b8e0ff;
+  bottom: -200px;
+  left: -150px;
+  opacity: 0.7;
+  animation: orb-move-b 7s ease-in-out infinite alternate;
+}
+
+@keyframes orb-move-a {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-120px, 120px) scale(1.25);
+  }
+}
+
+@keyframes orb-move-b {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(120px, -100px) scale(1.3);
+  }
+}
+
+.saas-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  text-align: center;
+  padding: var(--spacing-lg);
+  max-width: 800px;
+}
+
+.saas-badge {
+  background: #f0f0ff;
+  border: 1px solid #c0b8ff;
+  color: #6a5acd;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 4px 14px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.saas-heading {
+  font-size: clamp(3.5rem, 7vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #0a0a0a;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.saas-heading-accent {
+  background: linear-gradient(90deg, #6a5acd, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.saas-sub {
+  font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+  color: #555;
+  max-width: 600px;
+  line-height: 1.6;
+  margin-bottom: 1em;
+}
+
+.saas-pills {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.saas-pill {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-size: 1.1rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.saas-check {
+  color: #6a5acd;
+  font-weight: 700;
+}
+
+.saas-cta {
+  background: linear-gradient(90deg, #6a5acd, #38bdf8);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 20px 52px;
+  margin-top: var(--spacing-lg);
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  letter-spacing: 0.01em;
+  /* override early-link animation for this context */
+  animation: none;
+  text-decoration: none;
+}
+
+.saas-cta:hover {
+  opacity: 0.9;
+  color: #fff;
+}
+
+.saas-fine {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-top: 1rem;
+}
+
+.saas-logos {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.saas-logos span:first-child {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #bbb;
+}
+
+.saas-logo-item {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ccc;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
