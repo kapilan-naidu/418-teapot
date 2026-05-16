@@ -21,17 +21,17 @@ const MIDI_CFG = {
   CC_PROB_BASE: 13, // CC 13–24 → track probs
   CC_MUTE_BASE: 25, // CC 25–36 → track mutes (0 = unmuted, 127 = muted)
 
-  NOTE_OFF_DELAY_MS: 100, // ms before sending note-off after note-on
+  NOTE_OFF_DELAY_MS: 50, // ms before sending note-off after note-on
 };
 
 // Shape → MIDI note mapping (channel 2)
 const SHAPE_NOTES = {
-  square: 60, // C4
-  triangle: 62, // D4
-  circle: 64, // E4
-  hexagon: 65, // F4
-  starburst: 67, // G4
-  cross: 69, // A4
+  square: 54, // F#4
+  triangle: 57, // A4
+  circle: 59, // B4
+  hexagon: 61, // C#5
+  starburst: 64, // E5
+  cross: 66, // F#5
 };
 
 // ---------------------------------------------------------------------------
@@ -46,6 +46,12 @@ const muteState = new Array(12).fill(false);
 
 // Last known gain per track — sent immediately on unmute
 const gainState = new Array(12).fill(0.7);
+
+const lastSentGain = new Array(12).fill(-1);
+const lastSentMute = new Array(12).fill(-1);
+const lastSentProb = new Array(12).fill(-1);
+
+const MIDI_CHANGE_THRESHOLD = 2; // out of 127
 
 // ---------------------------------------------------------------------------
 // Init
@@ -76,6 +82,26 @@ function initMidi() {
 
     midiReady = true;
     console.log(`[midi] Connected to "${MIDI_CFG.OUTPUT_PORT_NAME}"`);
+
+    // Prime all CCs with safe defaults so Strudel never receives NaN on startup
+    setTimeout(() => {
+      // Gains — default to 90 (0.7 normalised)
+      for (let i = 0; i < 12; i++) {
+        sendCC(MIDI_CFG.CH_PARAMS, MIDI_CFG.CC_GAIN_BASE + i, 127);
+        lastSentGain[i] = 127;
+      }
+      // Probs — default to 0 (no degradeBy)
+      for (let i = 0; i < 12; i++) {
+        sendCC(MIDI_CFG.CH_PARAMS, MIDI_CFG.CC_PROB_BASE + i, 0);
+        lastSentProb[i] = 0;
+      }
+      // Mutes — default to 0 (unmuted)
+      for (let i = 0; i < 12; i++) {
+        sendCC(MIDI_CFG.CH_PARAMS, MIDI_CFG.CC_MUTE_BASE + i, 0);
+        lastSentMute[i] = 0;
+      }
+      console.log("[midi] Default CC values primed");
+    }, 2000);
   });
 }
 
@@ -105,38 +131,51 @@ function processMidiState(msg) {
   const ch = MIDI_CFG.CH_PARAMS;
 
   // --- Mutes (CC 25–36) ---
-  // Process mutes first so muteState is fresh when we gate gains below
+  // Binary — no threshold, any change fires immediately
+  // Process first so muteState is fresh when we gate gains below
   if (Array.isArray(msg.mutes)) {
     msg.mutes.forEach((muted, i) => {
       const wasMuted = muteState[i];
       muteState[i] = muted;
-
       const cc = MIDI_CFG.CC_MUTE_BASE + i;
       const val = muted ? 127 : 0;
-      sendCC(ch, cc, val);
 
-      // Track just unmuted — send its current gain immediately
-      if (wasMuted && !muted) {
-        const gainCC = MIDI_CFG.CC_GAIN_BASE + i;
-        const gainVal = to127(gainState[i]);
-        sendCC(ch, gainCC, gainVal);
+      if (val !== lastSentMute[i]) {
+        sendCC(ch, cc, val);
+        lastSentMute[i] = val;
+
+        // Track just unmuted — flush current gain so Strudel isn't stale
+        if (wasMuted && !muted) {
+          const gainCC = MIDI_CFG.CC_GAIN_BASE + i;
+          const gainVal = to127(gainState[i]);
+          sendCC(ch, gainCC, gainVal);
+          lastSentGain[i] = gainVal;
+        }
       }
     });
   }
 
-  // --- Gains (CC 1–12) — gated by mute state ---
+  // --- Gains (CC 1–12) — gated by mute, only send if value moved meaningfully ---
   if (Array.isArray(msg.gains)) {
     msg.gains.forEach((gain, i) => {
       gainState[i] = gain; // always update internal state
       if (muteState[i]) return; // suppress CC while muted
-      sendCC(ch, MIDI_CFG.CC_GAIN_BASE + i, to127(gain));
+      const val = to127(gain);
+      if (Math.abs(val - lastSentGain[i]) > MIDI_CHANGE_THRESHOLD) {
+        sendCC(ch, MIDI_CFG.CC_GAIN_BASE + i, val);
+        lastSentGain[i] = val;
+      }
     });
   }
 
-  // --- Probs (CC 13–24) — no gating needed ---
+  // --- Probs (CC 13–24) — no gating, only send if value moved meaningfully ---
   if (Array.isArray(msg.probs)) {
     msg.probs.forEach((prob, i) => {
-      sendCC(ch, MIDI_CFG.CC_PROB_BASE + i, to127(prob));
+      const val = to127(prob);
+      if (Math.abs(val - lastSentProb[i]) > MIDI_CHANGE_THRESHOLD) {
+        sendCC(ch, MIDI_CFG.CC_PROB_BASE + i, val);
+        lastSentProb[i] = val;
+      }
     });
   }
 }

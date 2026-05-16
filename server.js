@@ -164,7 +164,7 @@ wss.on("connection", (ws) => {
   clientStates.set(clientId, {
     gains: new Array(TRACK_COUNT).fill(0.7),
     mutes: new Array(TRACK_COUNT).fill(false),
-    probs: new Array(TRACK_COUNT).fill(0.8),
+    probs: new Array(12).fill(0),
   });
 
   console.log(`[+] ${clientId} connected. Total: ${clientStates.size}`);

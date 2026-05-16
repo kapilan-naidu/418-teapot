@@ -8,7 +8,7 @@
 
 const CFG = {
   // Particles
-  PARTICLE_COUNT_DEFAULT: 80, // base particle count
+  PARTICLE_COUNT_DEFAULT: 100, // base particle count
   PARTICLE_SPEED_DEFAULT: 0.4, // 0–1 normalised speed
   PARTICLE_SIZE_DEFAULT: 0.4, // 0–1 normalised size
   PARTICLE_SPREAD_DEFAULT: 0.5,
@@ -19,7 +19,7 @@ const CFG = {
   PARTICLE_SIZE_MAX: 6, // px
   PARTICLE_SPEED_MIN: 0.05,
   PARTICLE_SPEED_MAX: 1.8,
-  PARTICLE_MAX_COUNT: 300,
+  PARTICLE_MAX_COUNT: 600,
 
   // Shape triggers
   SHAPE_LIFESPAN_MIN: 1000, // ms
@@ -460,7 +460,7 @@ function drawDashboard() {
 
   lines.forEach((line, i) => {
     const isRecent = i >= 5 && i < 5 + recentMessages.length;
-    fill(isRecent ? color("#c0ff00") : color("#888888"));
+    fill(isRecent ? color(PALETTES[activePalette].colors[0]) : color("#888888"));
     text(line, x + pad, y + pad + lh * i + fs);
   });
 }
