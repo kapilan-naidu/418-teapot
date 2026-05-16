@@ -26,8 +26,8 @@ const CFG = {
   SHAPE_LIFESPAN_MAX: 5000, // ms
   SHAPE_LONG_LIFE_CHANCE: 0.12, // probability of 3× lifespan
   SHAPE_LONG_LIFE_MULT: 3,
-  SHAPE_SIZE_MIN: 40, // px
-  SHAPE_SIZE_MAX: 220, // px
+  SHAPE_SIZE_MIN: 50, // px
+  SHAPE_SIZE_MAX: 250, // px
   SHAPE_STROKE_WEIGHT: 1.5,
 
   // Motifs
@@ -36,8 +36,8 @@ const CFG = {
   MOTIF_STROKE_WEIGHT: 1.2,
 
   // Dashboard
-  DASHBOARD_FONT_SIZE: 12, // px
-  DASHBOARD_MAX_MESSAGES: 5,
+  DASHBOARD_FONT_SIZE: 14, // px
+  DASHBOARD_MAX_MESSAGES: 8,
   DASHBOARD_BG_ALPHA: 0.8, // 0–1
 
   // Lerp smoothing for incoming aggregate params (per frame)
@@ -49,11 +49,11 @@ const CFG = {
 // ---------------------------------------------------------------------------
 
 const PALETTES = [
-  { name: "Void", colors: ["#c0ff00", "#ffffff", "#444444"] },
-  { name: "Ember", colors: ["#ff4400", "#ff9900", "#ffeecc"] },
-  { name: "Cryo", colors: ["#00ccff", "#0044ff", "#ccffff"] },
-  { name: "Acid", colors: ["#ff00ff", "#00ff88", "#ffff00"] },
-  { name: "Dusk", colors: ["#cc88ff", "#ff88aa", "#ffd4a0"] },
+  { name: "Void", colors: ["#c0ff00", "#ffffff", "#444444", "#cc3333", "#1a8c00"] },
+  { name: "Ember", colors: ["#ff4400", "#ff9900", "#ffeecc", "#cc0044", "#ffcc00"] },
+  { name: "Cryo", colors: ["#00ccff", "#0099dd", "#e8f8ff", "#aaeeff", "#0066aa"] },
+  { name: "Acid", colors: ["#ff00ff", "#00ff88", "#ffff00", "#ff0088", "#00ffff"] },
+  { name: "Dusk", colors: ["#cc88ff", "#ff88aa", "#ffd4a0", "#9944dd", "#6633aa"] },
 ];
 
 // ---------------------------------------------------------------------------
@@ -376,7 +376,8 @@ function spawnMotif(points, senderId) {
   const lifespan = random(CFG.MOTIF_LIFESPAN_MIN, CFG.MOTIF_LIFESPAN_MAX);
 
   // Points arrive normalised 0–1; map to canvas on spawn
-  const mapped = points.map(([nx, ny]) => [nx * width, ny * height]);
+  const scale = random(0.1, 0.4);
+  const mapped = points.map(([nx, ny]) => [nx * width * scale, ny * height * scale]);
 
   motifEvents.push({
     points: mapped,
@@ -418,7 +419,7 @@ function drawMotifs() {
     for (const [px, py] of m.points) {
       vertex(px - cx, py - cy);
     }
-    endShape(CLOSE);
+    endShape();
     pop();
   }
 }
@@ -432,7 +433,7 @@ function drawDashboard() {
   const pad = 10;
   const lh = fs + 4;
   const lines = [
-    `clients: ${connectedCount}`,
+    `clients: ${connectedCount - 1}`,
     `shapes:  ${shapeEvents.length}`,
     `motifs:  ${motifEvents.length}`,
     `palette: ${PALETTES[activePalette].name}`,

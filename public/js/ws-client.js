@@ -1,6 +1,6 @@
 // ws-client.js
 // Shared WebSocket client — used by both index.html and play.html
-// On index.html: pipes incoming messages to handleSketchMessage() in sketch.js
+// On index.html: pipes incoming messages to handleSketchMessage() and handleMidiMessage()
 // On play.html:  pipes incoming messages to onMessage() callback set by controls.js
 
 const WS_URL = `ws://${location.host}`;
@@ -24,15 +24,12 @@ function connect() {
       return;
     }
 
-    // Presenter view — route to sketch
-    if (typeof handleSketchMessage === "function") {
-      handleSketchMessage(data);
-    }
+    // Presenter view — route to sketch and MIDI bridge
+    if (typeof handleSketchMessage === "function") handleSketchMessage(data);
+    if (typeof handleMidiMessage === "function") handleMidiMessage(data);
 
     // Any registered callback (used by play.html / controls.js)
-    if (_onMessageCallback) {
-      _onMessageCallback(data);
-    }
+    if (_onMessageCallback) _onMessageCallback(data);
   });
 
   socket.addEventListener("close", () => {

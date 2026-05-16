@@ -7,8 +7,8 @@ let current = 0;
 function goTo(index) {
   if (index < 0 || index >= slides.length) return;
 
-  // Pause sketch when leaving slide 6 (index 5)
-  if (current === 5 && index !== 5) {
+  // Pause sketch when leaving slides 5 or 6 (indices 4 & 5) for any other slide
+  if ((current === 4 || current === 5) && index !== 4 && index !== 5) {
     if (typeof sketchPause === "function") sketchPause();
   }
 
@@ -19,13 +19,13 @@ function goTo(index) {
 
   history.replaceState(null, null, `#slide-${current + 1}`);
 
-  // Prewarm on slide 5 (index 4)
-  if (current === 4) {
+  // Prewarm on slide 4 (index 3)
+  if (current === 3) {
     if (typeof sketchPrewarm === "function") sketchPrewarm();
   }
 
-  // Start (or resume) on slide 6 (index 5)
-  if (current === 5) {
+  // Start (or resume) on slide 5 or 6 (indices 4 & 5)
+  if (current === 4 || current === 5) {
     if (typeof sketchStart === "function") sketchStart();
   }
 }

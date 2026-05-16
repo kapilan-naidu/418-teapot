@@ -3,13 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>418: I'm A Teapot | Participant</title>
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/play.css" />
   </head>
   <body>
+    <header id="play-header">
+      <span id="play-title">418: I'm a Teapot</span>
+    </header>
+
     <div id="control-surface">
       <!-- Randomly generated controls injected here by controls.js -->
     </div>
@@ -17,6 +24,18 @@
     <script src="js/ws-client.js"></script>
     <script src="js/controls.js"></script>
     <script>
+      // Prevent double-tap to zoom
+      let lastTap = 0;
+      document.addEventListener(
+        "touchend",
+        (e) => {
+          const now = Date.now();
+          if (now - lastTap < 300) e.preventDefault();
+          lastTap = now;
+        },
+        { passive: false }
+      );
+
       generateControls();
     </script>
   </body>
