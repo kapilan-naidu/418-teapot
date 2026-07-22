@@ -35,11 +35,6 @@ const CFG = {
   MOTIF_LIFESPAN_MAX: 9000, // ms
   MOTIF_STROKE_WEIGHT: 1.2,
 
-  // Dashboard
-  DASHBOARD_FONT_SIZE: 14, // px
-  DASHBOARD_MAX_MESSAGES: 8,
-  DASHBOARD_BG_ALPHA: 0.8, // 0–1
-
   // Lerp smoothing for incoming aggregate params (per frame)
   LERP_SPEED: 0.05,
 };
@@ -72,11 +67,6 @@ let activePalette = 0; // index into PALETTES
 
 let isRunning = false;
 let isWarmed = false;
-
-// Dashboard
-let showDashboard = true;
-let connectedCount = 0;
-let recentMessages = []; // string[]
 
 // ---------------------------------------------------------------------------
 // Sketch lifecycle (called by slides.js)
@@ -130,8 +120,6 @@ function draw() {
   drawParticles();
   drawMotifs();
   drawShapes();
-
-  if (showDashboard) drawDashboard();
 }
 
 function windowResized() {
@@ -415,53 +403,12 @@ function drawMotifs() {
 }
 
 // ---------------------------------------------------------------------------
-// Dashboard overlay
-// ---------------------------------------------------------------------------
-
-function drawDashboard() {
-  const fs = CFG.DASHBOARD_FONT_SIZE;
-  const pad = 10;
-  const lh = fs + 4;
-  const lines = [
-    `clients: ${connectedCount - 1}`,
-    `shapes:  ${shapeEvents.length}`,
-    `motifs:  ${motifEvents.length}`,
-    `palette: ${PALETTES[activePalette].name}`,
-    `───────────────`,
-    ...recentMessages,
-    `───────────────`,
-    `[d] toggle dashboard`,
-  ];
-
-  const w = 220;
-  const h = lines.length * lh + pad * 2;
-  const x = pad;
-  const y = height - h - pad;
-
-  // Background
-  noStroke();
-  fill(0, 0, 0, CFG.DASHBOARD_BG_ALPHA);
-  rect(x, y, w, h, 3);
-
-  // Text
-  textFont("monospace");
-  textSize(fs);
-  noStroke();
-
-  lines.forEach((line, i) => {
-    const isRecent = i >= 5 && i < 5 + recentMessages.length;
-    fill(isRecent ? color(PALETTES[activePalette].colors[0]) : color("#888888"));
-    text(line, x + pad, y + pad + lh * i + fs);
-  });
-}
-
-// ---------------------------------------------------------------------------
 // WS message ingestion — called by ws-client.js onMessage handler
 // ---------------------------------------------------------------------------
 
 function handleSketchMessage(msg) {
-  // Log to dashboard (recent messages)
-  logMessage(msg);
+  // Forward to the HTML dashboard panel (dashboard.js)
+  if (typeof dashboard !== "undefined") dashboard.update(msg);
 
   switch (msg.type) {
     case "hello":
@@ -470,8 +417,6 @@ function handleSketchMessage(msg) {
 
     // Aggregate state tick from server
     case "state": {
-      connectedCount = msg.clientCount ?? connectedCount;
-
       // Map server 0–1 values to target params
       if (msg.particles) {
         target.particleCount = msg.particles.count ?? target.particleCount;
@@ -509,37 +454,3 @@ function handleSketchMessage(msg) {
   }
 }
 
-// Keep a short rolling log of human-readable message summaries
-function logMessage(msg) {
-  let label;
-  switch (msg.type) {
-    case "state":
-      return; // too frequent — skip
-    case "trigger":
-      label = `▶ trigger: ${msg.shape}`;
-      break;
-    case "motif":
-      label = `✎ motif from ${msg.senderId?.slice(0, 6)}`;
-      break;
-    case "palette":
-      label = `◈ palette → ${PALETTES[msg.palette]?.name}`;
-      break;
-    case "color":
-      label = `● color from ${msg.senderId?.slice(0, 6)}`;
-      break;
-    default:
-      label = `? ${msg.type}`;
-  }
-  recentMessages.unshift(label);
-  if (recentMessages.length > CFG.DASHBOARD_MAX_MESSAGES) {
-    recentMessages.pop();
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Keyboard
-// ---------------------------------------------------------------------------
-
-function keyPressed() {
-  if (key === "d" || key === "D") showDashboard = !showDashboard;
-}

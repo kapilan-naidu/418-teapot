@@ -5,6 +5,15 @@
 
 const WS_URL = `ws://${location.host}`;
 
+// index.html marks <html data-role="presenter">; play.html leaves it unset
+const ROLE = document.documentElement.dataset.role === "presenter" ? "presenter" : "audience";
+
+// #conn-status only exists on play.html — no-op elsewhere
+const connStatusEl = document.getElementById("conn-status");
+function setConnStatus(connected) {
+  if (connStatusEl) connStatusEl.classList.toggle("connected", connected);
+}
+
 let socket;
 
 function connect() {
@@ -12,6 +21,8 @@ function connect() {
 
   socket.addEventListener("open", () => {
     console.log("[ws] connected");
+    setConnStatus(true);
+    send({ type: "register", role: ROLE });
   });
 
   socket.addEventListener("message", (event) => {
@@ -30,11 +41,13 @@ function connect() {
 
   socket.addEventListener("close", () => {
     console.log("[ws] disconnected — retrying in 2s");
+    setConnStatus(false);
     setTimeout(connect, 2000);
   });
 
   socket.addEventListener("error", (err) => {
     console.error("[ws] error:", err);
+    setConnStatus(false);
   });
 }
 

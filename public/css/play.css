@@ -37,6 +37,23 @@ body {
   display: block;
 }
 
+/* Connection status dot — green when open, grey while disconnected/reconnecting */
+#conn-status {
+  position: fixed;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-dim);
+  transition: background 0.2s ease;
+  z-index: 9999;
+}
+
+#conn-status.connected {
+  background: var(--color-accent);
+}
+
 /* Control surface */
 #control-surface {
   width: 100%;

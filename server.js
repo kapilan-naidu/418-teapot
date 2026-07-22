@@ -37,6 +37,9 @@ const clientStates = new Map(); // clientId -> { gains, mutes, probs, particles 
 // Map ws -> clientId for lookup on message/close
 const wsToId = new Map();
 
+// clientIds registered as the presenter view — excluded from audience clientCount
+const presenterIds = new Set();
+
 let clientCounter = 0;
 
 function makeClientId() {
@@ -127,7 +130,7 @@ function buildAggregateState() {
     mutes,
     probs,
     particles,
-    clientCount: clientStates.size,
+    clientCount: clientStates.size - presenterIds.size,
   };
 }
 
@@ -188,6 +191,17 @@ wss.on("connection", (ws) => {
     const id = wsToId.get(ws);
 
     switch (msg.type) {
+      // --- Role registration — presenter tabs are excluded from clientCount ---
+      case "register": {
+        if (msg.role === "presenter") {
+          presenterIds.add(id);
+        } else {
+          presenterIds.delete(id);
+          broadcastAll({ type: "presence", event: "join", clientId: id });
+        }
+        break;
+      }
+
       // --- Continuous param updates from a client ---
       case "params": {
         const state = clientStates.get(id);
@@ -242,8 +256,11 @@ wss.on("connection", (ws) => {
 
   ws.on("close", () => {
     const id = wsToId.get(ws);
+    const wasPresenter = presenterIds.has(id);
     clientStates.delete(id);
     wsToId.delete(ws);
+    presenterIds.delete(id);
+    if (!wasPresenter) broadcastAll({ type: "presence", event: "leave", clientId: id });
     console.log(`[-] ${id} disconnected. Total: ${clientStates.size}`);
   });
 

@@ -42,14 +42,42 @@ const SHAPE_ICONS = {
 // key:  used in WS message construction
 // category: track | particle | shape | global
 
+// Vague-but-descriptive labels — enough to invite curiosity, not a manual
+const PARTICLE_LABELS = {
+  count: "density",
+  speed: "speed",
+  size: "size",
+  spread: "drift",
+  opacity: "opacity",
+  chaos: "chaos",
+};
+
 function buildPool() {
   const pool = [];
 
   // Track controls — 12 tracks × 3 types
   for (let t = 1; t <= 12; t++) {
-    pool.push({ type: "slider", key: `gain_${t}`, category: "track", default: 0.7 });
-    pool.push({ type: "toggle", key: `mute_${t}`, category: "track", default: false });
-    pool.push({ type: "slider", key: `prob_${t}`, category: "track", default: 0.8 });
+    pool.push({
+      type: "slider",
+      key: `gain_${t}`,
+      category: "track",
+      default: 0.7,
+      label: "signal",
+    });
+    pool.push({
+      type: "toggle",
+      key: `mute_${t}`,
+      category: "track",
+      default: false,
+      label: "on / off",
+    });
+    pool.push({
+      type: "slider",
+      key: `prob_${t}`,
+      category: "track",
+      default: 0.8,
+      label: "chance",
+    });
   }
 
   // Particle controls — 6 sliders
@@ -60,6 +88,7 @@ function buildPool() {
       key: `particle_${p}`,
       category: "particle",
       default: 0.5,
+      label: PARTICLE_LABELS[p],
     });
   }
 
@@ -83,9 +112,10 @@ const localState = {
   probs: new Array(12).fill(0.8),
 };
 
-// All rendered sliders — updated when color picker changes
+// All rendered sliders/toggles/motif canvases — updated when color picker changes
 const allSliders = [];
 const allToggles = [];
+const allMotifCanvases = [];
 
 function generateControls() {
   const surface = document.getElementById("control-surface");
@@ -105,7 +135,12 @@ function generateControls() {
   // Inject palette cycler into a random slot if assigned
   if (hasPalette) {
     const idx = Math.floor(Math.random() * assigned.length);
-    assigned[idx] = { type: "palette", key: "palette_cycle", category: "global" };
+    assigned[idx] = {
+      type: "palette",
+      key: "palette_cycle",
+      category: "global",
+      label: "palette",
+    };
   }
 
   // Render controls into a 2-column grid
@@ -115,7 +150,7 @@ function generateControls() {
   grid.style.cssText = `
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 8px;
     width: 100%;
     ${!hasCanvas ? "flex: 1;" : ""}
   `;
@@ -150,12 +185,12 @@ function buildControl(ctrl, expandCells = false) {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 90px;
+    min-height: 76px;
     ${expandCells ? "flex: 1;" : ""}
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.08); border-radius: 4px;
-    padding: 12px;
-    gap: 10px;
+    padding: 8px;
+    gap: 6px;
   `;
 
   switch (ctrl.type) {
@@ -173,7 +208,26 @@ function buildControl(ctrl, expandCells = false) {
       break;
   }
 
+  if (ctrl.label) cell.appendChild(buildControlLabel(ctrl.label));
+
   return cell;
+}
+
+// Small, muted, uppercase, monospace — matches the control surface aesthetic
+function buildControlLabel(text) {
+  const label = document.createElement("span");
+  label.textContent = text;
+  label.style.cssText = `
+    font-family: ui-monospace, monospace;
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    color: rgba(255,255,255,0.35);
+    pointer-events: none;
+  `;
+  return label;
 }
 
 // --- Slider ---
@@ -426,6 +480,9 @@ function updateControlColors(hex) {
   for (const toggle of allToggles) {
     toggle.render(accentColor);
   }
+  for (const canvas of allMotifCanvases) {
+    canvas.setColor(accentColor);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -438,21 +495,26 @@ function buildMotifCanvas() {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     margin-top: 8px;
+    flex: 1;
+    min-height: 0;
   `;
 
-  // Canvas wrapper
+  // Canvas wrapper — flexes to fill whatever space is left in the viewport
+  // rather than a fixed height, so the surface never scrolls or clips
   const wrapper = document.createElement("div");
   wrapper.style.cssText = `
     width: 100%;
     position: relative;
+    flex: 1;
+    min-height: 0;
   `;
 
   const canvas = document.createElement("canvas");
   canvas.style.cssText = `
     width: 100%;
-    height: 280px;
+    height: 100%;
     display: block;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.08); border-radius: 4px;
@@ -512,6 +574,7 @@ function buildMotifCanvas() {
   let points = []; // raw pixel points while drawing
   let drawing = false;
   let hasDrawn = false;
+  let strokeColor = SLIDER_COLOR_DEFAULT; // kept in sync with the color picker
 
   function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
@@ -526,7 +589,7 @@ function buildMotifCanvas() {
     const h = canvas.getBoundingClientRect().height;
     ctx.clearRect(0, 0, w, h);
     if (points.length < 2) return;
-    ctx.strokeStyle = "#c0ff00";
+    ctx.strokeStyle = strokeColor;
     ctx.lineWidth = 1.5;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
@@ -578,6 +641,13 @@ function buildMotifCanvas() {
   canvas.addEventListener("pointermove", onMove);
   canvas.addEventListener("pointerup", onEnd);
   canvas.addEventListener("pointercancel", onEnd);
+
+  allMotifCanvases.push({
+    setColor: (hex) => {
+      strokeColor = hex;
+      redraw();
+    },
+  });
 
   // Send button — normalise points, broadcast, clear
   sendBtn.addEventListener("click", () => {

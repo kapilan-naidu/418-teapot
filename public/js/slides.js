@@ -19,6 +19,9 @@ function goTo(index) {
 
   history.replaceState(null, null, `#slide-${current + 1}`);
 
+  // Dashboard only ever shows on slide 6 (index 5)
+  if (typeof dashboard !== "undefined" && dashboard.setSlide) dashboard.setSlide(current);
+
   // Prewarm on slide 4 (index 3)
   if (current === 3) {
     if (typeof sketchPrewarm === "function") sketchPrewarm();

@@ -1,0 +1,106 @@
+/* dashboard.css — presenter status overlay panel */
+/* Replaces the old canvas-drawn dashboard. Toggled with 'd'; only ever shown
+   on slide 6 regardless of toggle state — see dashboard.js's setSlide() */
+
+#dashboard-panel {
+  display: none;
+  position: fixed;
+  left: var(--spacing-sm);
+  bottom: var(--spacing-sm);
+  width: 220px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-shade);
+  z-index: 9998;
+  pointer-events: none;
+}
+
+#dashboard-panel.visible {
+  display: block;
+}
+
+.dash-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dash-clients {
+  color: #fff;
+}
+
+.dash-palette-name {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dash-swatches {
+  display: flex;
+  gap: 4px;
+}
+
+.dash-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dash-divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 8px 0;
+}
+
+.dash-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dash-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dash-bar-label {
+  width: 52px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+.dash-bar-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.dash-bar-fill {
+  height: 100%;
+  background: var(--color-accent); /* overridden inline to match the active palette */
+  width: 0%;
+  transition: width 0.15s ease, background 0.15s ease;
+}
+
+.dash-log {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  min-height: 1.5em;
+}
+
+.dash-hint {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--color-dim);
+}
