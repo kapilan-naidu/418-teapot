@@ -1,13 +1,13 @@
 # 418: I'm a Teapot
 
-A real-time participatory audiovisual presentation for Tech Why? Conference 2026, organized by Tech Whye Conference in conjunction with [Feelers](https://www.feelers-feelers.com).
+A real-time participatory audiovisual presentation for _Tech Why? Conference 2026_, organized by Tech Whye Conference in conjunction with [Feelers](https://www.feelers-feelers.com).
 
 Audience members navigate to the IP address of the hosting device, land on a phone control surface, and each gets a small, randomized subset of controls: a few sliders, some toggle buttons, one or more shape triggers, maybe a canvas to draw on. Individually none of it does much. Aggregated across the room, it drives a generative p5.js visual on the big screen and a 12-track generative music patch running live in [Strudel](https://strudel.cc). The talk's thesis: the browser never stopped being able to do weird, playful things — we just stopped asking it to.
 
 ## Prerequisites
 
 - **Node.js**
-- **A Chromium-based browser** (Chrome or Edge) for the presenter view — it talks to Strudel over [WebMIDI](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API), which Safari and Firefox don't support. The visuals and slides will still run in any browser, just without the audio link.
+- **A Chromium-based browser** (Chrome or Edge) for the presenter view — it communicates with Strudel over [WebMIDI](https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API), which Safari and Firefox don't support. The visuals and slides will still run in any browser, just without the audio link.
 - **IAC Driver Bus 1** enabled, on macOS: Audio MIDI Setup → Window → Show MIDI Studio → double-click IAC Driver → check "Device is online". The port must be named exactly `IAC Driver Bus 1` — that's what `midi-bridge.js` and `strudel/patch.js` both look for. IAC is macOS-only — on Windows, install a virtual MIDI loopback tool instead (e.g. [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)), then update the port name in both `midi-bridge.js` and `strudel/patch.js` to match whatever you name the virtual port.
 - **[Strudel](https://strudel.cc)** open in its own browser tab — it's not served by this app, you paste the patch in manually.
 - **A way to reach the server from audience phones** — same Wi-Fi/LAN as your laptop, or a tunnel like [ngrok](https://ngrok.com) if the network won't allow it.
