@@ -1,6 +1,6 @@
 /* dashboard.css — presenter status overlay panel */
-/* Replaces the old canvas-drawn dashboard. Toggled with 'd'; only ever shown
-   on slide 6 regardless of toggle state — see dashboard.js's setSlide() */
+/* Toggled with 'd'; only ever shown on slide 6 regardless of toggle state —
+   see dashboard.js's setSlide() */
 
 #dashboard-panel {
   display: none;

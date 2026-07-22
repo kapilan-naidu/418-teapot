@@ -1,9 +1,9 @@
 // dashboard.js — presenter status overlay panel
-// Replaces the old canvas-drawn drawDashboard() in sketch.js with a real HTML
-// panel so it can be styled/transitioned with CSS. Toggled with 'd', but only
-// ever shown on slide 6 (index 5) — see setSlide(), called from slides.js.
-// Fed by sketch.js's handleSketchMessage(), which calls dashboard.update(msg)
-// for every incoming WS message.
+// An HTML panel showing live client count, active palette, particle levels,
+// and a rolling event log. Toggled with 'd', but only ever shown on slide 6
+// (index 5) — see setSlide(), called from slides.js. Fed by sketch.js's
+// handleSketchMessage(), which calls dashboard.update(msg) for every
+// incoming WS message.
 //
 // Requires PALETTES (palettes.js) — loaded before this file in index.html
 
