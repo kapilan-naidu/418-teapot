@@ -277,16 +277,8 @@ function buildTrigger(cell, ctrl) {
 
 // --- Palette cycler ---
 function buildPalette(cell, ctrl) {
-  const PALETTE_NAMES = ["Void", "Ember", "Cryo", "Acid", "Dusk"];
+  // PALETTES from palettes.js — loaded before this file in play.html
   let current = 0;
-
-  const swatches = [
-    ["#c0ff00", "#ffffff", "#444444", "#cc3333", "#1a8c00"],
-    ["#ff4400", "#ff9900", "#ffeecc", "#cc0044", "#ffcc00"],
-    ["#00ccff", "#0099dd", "#e8f8ff", "#aaeeff", "#0066aa"],
-    ["#ff00ff", "#00ff88", "#ffff00", "#ff0088", "#00ffff"],
-    ["#cc88ff", "#ff88aa", "#ffd4a0", "#9944dd", "#6633aa"],
-  ];
 
   const btn = document.createElement("button");
   btn.style.cssText = `
@@ -305,7 +297,7 @@ function buildPalette(cell, ctrl) {
 
   const renderSwatches = () => {
     btn.innerHTML = "";
-    for (const col of swatches[current]) {
+    for (const col of PALETTES[current].colors) {
       const dot = document.createElement("span");
       dot.style.cssText = `
         width: 12px;
@@ -322,7 +314,7 @@ function buildPalette(cell, ctrl) {
   renderSwatches();
 
   btn.addEventListener("click", () => {
-    current = (current + 1) % PALETTE_NAMES.length;
+    current = (current + 1) % PALETTES.length;
     renderSwatches();
     send({ type: "palette", palette: current });
     if (navigator.vibrate) navigator.vibrate(40);

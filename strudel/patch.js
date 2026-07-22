@@ -1,11 +1,23 @@
 // 418: I'm a Teapot — Strudel patch
-// 125 BPM, F# minor with jazz extensions
-// MIDI CC channel 1: gains (1-12), probs (13-24), mutes (25-36)
-// MIDI note-on channel 2: shape triggers (notes 60-65)
+// ---------------------------------------------------------------------------
+// PASTE THIS FILE into the Strudel REPL (strudel.cc) — it is NOT served by
+// the Node server. It runs independently in your browser alongside the
+// presenter view.
+//
+// Prerequisites:
+//   - IAC Driver Bus 1 enabled in macOS Audio MIDI Setup
+//   - WebMIDI permission granted in the Strudel REPL
+//
+// MIDI routing:
+//   Channel 1 CC  — gains (CC 1–12), probs (CC 13–24), mutes (CC 25–36)
+//   Channel 2 Note-on — shape triggers (notes 54, 57, 59, 61, 64, 66)
+//
+// Tempo / key: 125 BPM, F# minor with jazz extensions
+// ---------------------------------------------------------------------------
 
-const allCC = await midin("IAC Driver Bus 1"); // or name of your MIDI device
+const allCC = await midin('IAC Driver Bus 1');
 const cc = (n) => allCC(n, 1);
-const kb = await midikeys("IAC Driver Bus 1");
+const kb = await midikeys('IAC Driver Bus 1');
 
 setcps(125 / 60 / 4);
 
@@ -13,7 +25,6 @@ setcps(125 / 60 / 4);
 // Harmonic material — F# minor jazz: Fsm9, Amaj7, Bm11, D9
 // ---------------------------------------------------------------------------
 
-const penta = ["fs4", "a4", "b4", "cs5", "e5", "fs5", "a5"];
 const pentaLow = ["fs3", "a3", "b3", "cs4", "e4"];
 
 // ---------------------------------------------------------------------------
@@ -23,7 +34,6 @@ const pentaLow = ["fs3", "a3", "b3", "cs4", "e4"];
 // cc(25-36) → mutes (127 = silent)
 // ---------------------------------------------------------------------------
 
-let g = (n) => cc(n).range(0, 1);
 let p = (n) => cc(n + 12).range(0, 0.85);
 let vol = (gCC, mCC) =>
   cc(gCC)
@@ -168,7 +178,7 @@ $track10: note(choose(pentaLow))
   .degradeBy(p(10));
 
 // ---------------------------------------------------------------------------
-// Track 11: Shimmer / drone — supermandolin, long sustain
+// Track 11: Shimmer / drone — string ensemble, long sustain
 // ---------------------------------------------------------------------------
 
 $track11: note(
@@ -193,7 +203,8 @@ $track12: sound(choose(["casio", "gong", "metal"]))
   .degradeBy(p(12));
 
 // ---------------------------------------------------------------------------
-// Shape triggers — incoming MIDI notes 60-65
+// Shape triggers — MIDI note-on from midi-bridge.js (channel 2)
+// Notes match SHAPE_NOTES in midi-bridge.js
 // ---------------------------------------------------------------------------
 
 $triggers: stack(

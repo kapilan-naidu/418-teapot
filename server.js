@@ -1,3 +1,7 @@
+// server.js
+// Express + WebSocket server for 418: I'm a Teapot
+// Aggregates client control state and broadcasts it to all connected peers
+
 const express = require("express");
 const http = require("http");
 const { WebSocketServer } = require("ws");
@@ -164,7 +168,7 @@ wss.on("connection", (ws) => {
   clientStates.set(clientId, {
     gains: new Array(TRACK_COUNT).fill(0.7),
     mutes: new Array(TRACK_COUNT).fill(false),
-    probs: new Array(12).fill(0),
+    probs: new Array(12).fill(0.8),
   });
 
   console.log(`[+] ${clientId} connected. Total: ${clientStates.size}`);
